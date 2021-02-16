@@ -1,0 +1,14 @@
+{
+  "name": "perserverancerpc",
+  "version": "1.0.0",
+  "description": "A quick discord RPC application for tracking perserverance landing.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ckohen",
+  "license": "MIT",
+  "dependencies": {
+    "discord-rpc": "^3.2.0"
+  }
+}
