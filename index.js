@@ -5,7 +5,7 @@ const { Client } = require('discord-rpc');
 const clientId = '811111315988283413';
 
 const day = 24 * 60 * 60;
-const landingTimestamp =  1613681692;
+const landingTimestamp = 1613681692;
 
 const rpcClient = new Client({ transport: 'ipc' });
 
@@ -21,7 +21,7 @@ function update() {
   let state = undefined;
   let details = diff > 0 ? "#CountdownToMars" : 'Perseverance is on Mars!';
   if (diffDays > 0) {
-    state = `${diffDays} Day${diffDays === 1 ? '' : 's'}`;
+    state = `${diffDays} Day${diffDays === 1 ? '' : 's'} and`;
   }
   const watchable = diff < 4 * 60 * 60;
   const buttons = [
@@ -45,4 +45,6 @@ function update() {
   }).catch(console.error);
 }
 
-rpcClient.login({ clientId });
+rpcClient.login({ clientId })
+  .then(() => console.log('Started RPC.'))
+  .catch(console.error);
