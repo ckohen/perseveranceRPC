@@ -15,8 +15,8 @@ rpcClient.on('ready', () => {
 });
 
 rpcClient.on('disconnected', () => {
-  console.log('Disconnected, attempting reconnect every minute');
-  connect();
+  console.log('Disconnected, attempting reconnect every 10 seconds');
+  setTimeout(connect, 10000);
 })
 
 function update() {
@@ -50,13 +50,11 @@ function update() {
   }).catch(console.error);
 }
 
-async function connect() {
-  await rpcClient.login({ clientId })
+function connect() {
+  rpcClient._connectPromise = undefined;
+  rpcClient.login({ clientId })
     .then(() => console.log('RPC Connected.'))
-    .catch(err => {
-      console.error(err);
-      setTimeout(connect, 60 * 60 * 1000);
-    });
+    .catch(console.error);
 }
 
 connect();
