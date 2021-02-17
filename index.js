@@ -14,6 +14,11 @@ rpcClient.on('ready', () => {
   setInterval(update, 10 * 1000);
 });
 
+rpcClient.on('disconnected', () => {
+  console.log('Disconnected, attempting reconnect every minute');
+  connect();
+})
+
 function update() {
   const currentTimestamp = Math.round(Date.now() / 1000);
   const diff = landingTimestamp - currentTimestamp;
@@ -45,6 +50,13 @@ function update() {
   }).catch(console.error);
 }
 
-rpcClient.login({ clientId })
-  .then(() => console.log('Started RPC.'))
-  .catch(console.error);
+async function connect() {
+  await rpcClient.login({ clientId })
+    .then(() => console.log('RPC Connected.'))
+    .catch(err => {
+      console.error(err);
+      setTimeout(connect, 60 * 60 * 1000);
+    });
+}
+
+connect();
