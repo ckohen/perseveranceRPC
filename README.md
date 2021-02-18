@@ -21,6 +21,21 @@ npm i
 ```bash
 node index.js
 ```
+### PM2 alternative
+Install PM2 with
+```bash
+npm install pm2 -g
+```
+Run the app by executing the following command in the project's directory
+```bash
+pm2 start index.js --name discordrpc
+```
+If you close the terminal window the project will keep running.
+To stop the RPC use
+```bash
+pm2 stop discordrpc
+```
+
 
 ## License
 [MIT](https://github.com/ckohen/perseveranceRPC/blob/main/LICENSE)
