@@ -1,60 +1,65 @@
 'use strict'
 
 const { Client } = require('discord-rpc');
+const julian = require('julian');
 
-const clientId = '811111315988283413';
-
+const clientId = '811145575134658561';
 const day = 24 * 60 * 60;
 const landingTimestamp = 1613681692;
+
+function getMSD(earthTimestamp) {
+  return (julian(earthTimestamp) - 2405522.0028779) / 1.0274912517;
+}
+function getMission() {
+  const date = Date.now();
+  return {
+      sol: Math.floor(getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime())),
+      percentage: ((getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime()))*100).toFixed(2)
+  }
+}
 
 const rpcClient = new Client({ transport: 'ipc' });
 
 rpcClient.on('ready', () => {
-  update();
-  setInterval(update, 10 * 1000);
+    update();
+    setInterval(update, 10 * 1000);
 });
 
 rpcClient.on('disconnected', () => {
-  console.log('Disconnected, attempting reconnect every 10 seconds');
-  setTimeout(connect, 10000);
+    console.log('Disconnected, attempting reconnect every 10 seconds');
+    setTimeout(connect, 10000);
 })
 
 function update() {
-  const currentTimestamp = Math.round(Date.now() / 1000);
-  const diff = landingTimestamp - currentTimestamp;
-  const diffDays = Math.floor(diff / day);
-  let state = undefined;
-  let details = diff > 0 ? "#CountdownToMars" : 'Perseverance is on Mars!';
-  if (diffDays > 0) {
-    state = `${diffDays} Day${diffDays === 1 ? '' : 's'} and`;
-  }
-  const watchable = diff < 4 * 60 * 60;
-  const buttons = [
-    {
-      label: watchable ? 'Watch the Landing!' : 'How Landing Works!',
-      url: watchable ? 'https://youtu.be/gm0b_ijaYMQ' : 'https://mars.nasa.gov/mars2020/timeline/landing/entry-descent-landing/',
-    },
-    {
-      label: 'Read about Perseverance!',
-      url: 'https://mars.nasa.gov/mars2020/',
-    },
-  ];
+    const missionInfo = getMission();
+    const state = `Perseverance - Sol ${missionInfo.sol} (${missionInfo.percentage}%)`;
+    const details = `Location: Jezero Crater`;
+    const buttons = [
+        {
+            label: 'Where is Perseverance!',
+            url: 'https://mars.nasa.gov/mars2020/mission/where-is-the-rover/',
+        },
+        {
+            label: 'Read about Sol (Mars day)!',
+            url: 'https://en.wikipedia.org/wiki/Sol_(day_on_Mars)',
+        }
+    ];
 
-  rpcClient.setActivity({
-    state,
-    details,
-    endTimestamp: diff > 0 ? landingTimestamp : undefined,
-    largeImageKey: 'nasa',
-    largeImageText: 'Nasa is running this mission!',
-    buttons,
-  }).catch(console.error);
+    rpcClient.setActivity({
+        state,
+        details,
+        startTimestamp: landingTimestamp,
+        largeImageKey: 'ps',
+        largeImageText: 'Nasa is running this mission!',
+        buttons,
+    }).catch(console.error);
 }
 
 function connect() {
-  rpcClient._connectPromise = undefined;
-  rpcClient.login({ clientId })
-    .then(() => console.log('RPC Connected.'))
-    .catch(console.error);
+    rpcClient._connectPromise = undefined;
+    rpcClient.login({ clientId })
+        .then(() => console.log('RPC Connected.'))
+        .catch(console.error);
 }
 
 connect();
