@@ -8,14 +8,21 @@ const day = 24 * 60 * 60;
 const landingTimestamp = 1613681692;
 
 function getMSD(earthTimestamp) {
-  return (julian(earthTimestamp) - 2405522.0028779) / 1.0274912517;
+    return (julian(earthTimestamp) - 2405522.0028779) / 1.0274912517;
 }
 function getMission() {
-  const date = Date.now();
-  return {
-      sol: Math.floor(getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime())),
-      percentage: ((getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime()))*100).toFixed(2)
-  }
+    const date = Date.now();
+    let sol = Math.floor(getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime()));
+    let percentage = ((getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime())) * 100).toFixed(2);
+    let _day = new Date(landingTimestamp * 1000);
+    _day.setDate(_day.getDate() + sol);
+    _day = new Date(_day.getTime() + new Date(day * percentage).getTime());
+
+    return {
+        sol,
+        percentage,
+        offset: _day.getTime()
+    }
 }
 
 const rpcClient = new Client({ transport: 'ipc' });
@@ -48,7 +55,7 @@ function update() {
     rpcClient.setActivity({
         state,
         details,
-        startTimestamp: landingTimestamp,
+        startTimestamp: missionInfo.offset,
         largeImageKey: 'ps',
         largeImageText: 'Nasa is running this mission!',
         buttons,
