@@ -10,9 +10,12 @@ const landingTimestamp = 1613681692;
 function getMSD(earthTimestamp) {
   return (julian(earthTimestamp) - 2405522.0028779) / 1.0274912517;
 }
-function getMissionSol() {
+function getMission() {
   const date = Date.now();
-  return Math.floor(getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime()));
+  return {
+      sol: Math.floor(getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime())),
+      percentage: ((getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime()))*100).toFixed(2)
+  }
 }
 
 const rpcClient = new Client({ transport: 'ipc' });
@@ -28,17 +31,18 @@ rpcClient.on('disconnected', () => {
 })
 
 function update() {
-    const state = `Perseverance - Sol ${getMissionSol()}`;
+    const missionInfo = getMission();
+    const state = `Perseverance - Sol ${missionInfo.sol} (${missionInfo.percentage}%)`;
     const details = `Location: Jezero Crater`;
     const buttons = [
-        {
-            label: 'Read about Sol (Mars day)!',
-            url: 'https://en.wikipedia.org/wiki/Sol_(day_on_Mars)',
-        },
         {
             label: 'Where is Perseverance!',
             url: 'https://mars.nasa.gov/mars2020/mission/where-is-the-rover/',
         },
+        {
+            label: 'Read about Sol (Mars day)!',
+            url: 'https://en.wikipedia.org/wiki/Sol_(day_on_Mars)',
+        }
     ];
 
     rpcClient.setActivity({
