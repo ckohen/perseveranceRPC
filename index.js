@@ -2,25 +2,18 @@
 
 const { Client } = require('discord-rpc');
 const julian = require('julian');
-const moment = require('moment');
 
 const clientId = '811145575134658561';
 const day = 24 * 60 * 60;
 const landingTimestamp = 1613681692;
 
-function getMSD(earthTime) {
-    earthTime = moment(earthTime).toDate();
-    return (julian(earthTime) - 2405522.0028779) / 1.0274912517;
-};
-function getMissionSol() {
-    let date = new Date().getTime();
-
-    return Math.floor(getMSD(date) - getMSD(new Date(1613681692 * 1000).toISOString()));
+function getMSD(earthTimestamp) {
+  return (julian(earthTimestamp) - 2405522.0028779) / 1.0274912517;
 }
-
-console.log(new Date(1613681692 * 1000).toISOString());
-
-console.log(getMissionSol());
+function getMissionSol() {
+  const date = Date.now();
+  return Math.floor(getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime()));
+}
 
 const rpcClient = new Client({ transport: 'ipc' });
 
@@ -35,9 +28,8 @@ rpcClient.on('disconnected', () => {
 })
 
 function update() {
-    const currentTimestamp = Math.round(Date.now() / 1000);
-    let state = `Perseverance - Sol ${getMissionSol()}`;
-    let details = `Location: Jezero Crater`;
+    const state = `Perseverance - Sol ${getMissionSol()}`;
+    const details = `Location: Jezero Crater`;
     const buttons = [
         {
             label: 'Read about Sol (Mars day)!',
