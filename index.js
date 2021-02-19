@@ -5,6 +5,7 @@ const julian = require('julian');
 
 const clientId = '811145575134658561';
 const day = 24 * 60 * 60;
+let marsSol = 88775244;
 const landingTimestamp = 1613681692;
 
 function getMSD(earthTimestamp) {
@@ -13,7 +14,7 @@ function getMSD(earthTimestamp) {
 function getMission() {
     const date = Date.now();
     let sol = Math.floor(getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime()));
-    let percentage = ((getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime())) * 100).toFixed(2);
+    let percentage = ((getMSD(date) - getMSD(new Date(landingTimestamp * 1000).getTime())) * 100 - sol * 100).toFixed(2);
     let _day = new Date(landingTimestamp * 1000);
     _day.setDate(_day.getDate() + sol);
     _day = new Date(_day.getTime() + new Date(day * percentage).getTime());
