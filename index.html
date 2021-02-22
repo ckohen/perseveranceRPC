@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel=stylesheet href=style.css />
+    <title>Perseverance Rich Presence</title>
+  </head>
+  <body>
+    <h2>Connection Status</h2>
+    <img id="connectImg" src="">
+    <p id="connectText"></p>
+    <br>
+    <br>
+    <label for="location">Location: </label>
+    <input id="location" type="text">
+    <button onclick="updateLocation()" style="display: inline;">Change Location</button>
+    <img id="success" src="">
+    <div id="version">
+      <p>Version: </p>
+      <p id="versionId"></p>
+    </div>
+    <script src=renderer.js></script>
+  </body>
+</html>

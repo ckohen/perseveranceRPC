@@ -1,15 +1,40 @@
 {
   "name": "perseverancerpc",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A quick discord RPC application for tracking perseverance landing.",
   "main": "index.js",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-builder --mac --windows --linux",
+    "release": "electron-builder --mac --windows --linux --publish",
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.ckohen.perseverancerpc",
+    "productName": "Perseverance RPC",
+    "mac": {
+      "category": "public.app-category.lifestyle"
+    },
+    "dmg": {
+      "icon": false
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility"
+    }
   },
   "author": "ckohen",
   "license": "MIT",
   "dependencies": {
     "discord-rpc": "^3.2.0",
+    "electron-updater": "^4.3.5",
     "julian": "^0.2.0"
+  },
+  "devDependencies": {
+    "electron": "^11.3.0",
+    "electron-builder": "^22.9.1"
   }
 }

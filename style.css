@@ -1,0 +1,26 @@
+body, html {
+  color: #dcddde;
+}
+
+#connectImg, #connectText {
+  display: inline;
+  height: 24px;
+  vertical-align: middle;
+}
+
+#version {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+}
+
+#version p {
+  display: inline;
+}
+
+#success {
+  display: none;
+  opacity: 0;
+  height: 20px;
+  vertical-align: middle;
+}
