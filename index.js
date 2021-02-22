@@ -51,7 +51,11 @@ function createWindow() {
 }
 
 function createTray() {
-  const appIcon = new Tray(path.join(__dirname, 'percy.png'));
+  const iconPath = process.env.WEBPACK_DEV_SERVER_URL
+    ? path.join(__dirname, '../app.asar/percy.png')
+    : path.join(__dirname, 'percy.png');
+  console.log(iconPath);
+  const appIcon = new Tray(iconPath);
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show',
