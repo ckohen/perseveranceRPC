@@ -14,7 +14,8 @@
     "appId": "com.ckohen.perseverancerpc",
     "productName": "Perseverance RPC",
     "mac": {
-      "category": "public.app-category.lifestyle"
+      "category": "public.app-category.lifestyle",
+      "identity": null
     },
     "dmg": {
       "icon": false
