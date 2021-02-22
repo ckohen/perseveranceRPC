@@ -10,6 +10,7 @@ const { autoUpdater } = require('electron-updater');
 let connected = false;
 let minimized = false;
 let electronWindow;
+let tray;
 let location = 'Jezero Crater';
 
 // App
@@ -51,10 +52,8 @@ function createWindow() {
 }
 
 function createTray() {
-  const iconPath = app.isPackaged
-    ? path.join(__dirname, '../app.asar/percy.png')
-    : path.join(__dirname, 'percy.png');
-  const appIcon = new Tray(iconPath);
+  const icon = path.join(__dirname, 'percy.png');
+  const appIcon = new Tray(icon);
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show',
@@ -81,6 +80,7 @@ function createTray() {
   });
   appIcon.setToolTip('Perseverance RPC');
   appIcon.setContextMenu(contextMenu);
+  tray = appIcon;
 }
 
 Menu.setApplicationMenu(Menu.buildFromTemplate([
