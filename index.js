@@ -2,6 +2,7 @@
 
 // Global
 const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
+const path = require('path');
 const { Client } = require('discord-rpc');
 const julian = require('julian');
 const { autoUpdater } = require('electron-updater');
@@ -50,7 +51,7 @@ function createWindow() {
 }
 
 function createTray() {
-  const appIcon = new Tray('percy.png');
+  const appIcon = new Tray(path.join(__dirname, 'percy.png'));
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show',
