@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "build": "electron-builder --mac --windows --linux",
-    "release": "electron-builder --mac --windows --linux --publish",
+    "build": "electron-builder",
+    "release": "electron-builder --publish",
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
