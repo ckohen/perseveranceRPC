@@ -63,7 +63,7 @@ function createTray() {
         if (connected) {
           electronWindow.webContents.executeJavaScript('setConnected();');
         } else {
-          setDisconnected();
+          electronWindow.webContents.executeJavaScript('setDisconnected();');
         }
       }
     },
@@ -106,6 +106,10 @@ ipcMain.on('updateLocation', (event, arg) => {
   event.returnValue = true;
 });
 
+ipcMain.on('reconnect', () => {
+  forceReconnect();
+});
+
 app.on('ready', () => {
   createWindow();
   createTray();
@@ -126,8 +130,10 @@ app.on('quit', () => console.log("Quitting"));
 
 // RPC
 const clientId = '811145575134658561';
-const day = 24 * 60 * 60;
+const day = 24 * 60 * 60 * 1000;
+const marsDay = 88775244;
 const landingTimestamp = 1613681692000;
+let forced = false;
 
 function getMSD(earthTimestamp) {
   return (julian(earthTimestamp) - 2451549.5) / 1.0274912517 + 44796;
@@ -138,14 +144,20 @@ function getMission() {
   const diff = getMSD(date) - getMSD(landingTimestamp);
   const sol = Math.floor(diff);
   const percentage = (diff * 100 - sol * 100).toFixed(2);
-  let _day = landingTimestamp;
-  _day += sol;
-  _day += day * percentage;
+  const totalSol = sol * marsDay;
+  const solTimestamp = landingTimestamp + totalSol;
+  let countDown = false;
+  let timestamp = solTimestamp;
+  if ((timestamp + day) < date) {
+    countDown = true;
+    timestamp += marsDay;
+  }
 
   return {
     sol,
     percentage,
-    offset: _day,
+    countDown,
+    timestamp,
   }
 }
 
@@ -169,8 +181,13 @@ rpcClient.on('disconnected', () => {
   clearInterval(updateInterval);
   updateInterval = null;
   console.log('Disconnected, attempting reconnect every 10 seconds');
-  setTimeout(connect, 10000);
-  
+  if (forced) {
+    forced = false;
+    console.log('Forced disconnect, fast tracking reconnect');
+    setTimeout(connect, 1000);
+  } else {
+    setTimeout(connect, 10000);
+  }
 })
 
 function update() {
@@ -191,7 +208,8 @@ function update() {
   rpcClient.setActivity({
     state,
     details,
-    startTimestamp: missionInfo.offset,
+    startTimestamp: missionInfo.timestamp,
+    endTimestamp: missionInfo.countDown ? missionInfo.timestamp : undefined,
     largeImageKey: 'ps',
     largeImageText: 'Nasa is running this mission!',
     buttons,
@@ -203,6 +221,11 @@ function connect() {
   rpcClient.login({ clientId })
     .then(() => console.log('RPC Connected.'))
     .catch(console.error);
+}
+
+function forceReconnect() {
+  forced = true;
+  rpcClient.destroy();
 }
 
 connect();

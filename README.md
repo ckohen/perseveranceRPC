@@ -19,7 +19,7 @@ npm i
 
 ## Running Project
 ```bash
-node index.js
+npm start
 ```
 ### PM2 alternative
 Install PM2 with
@@ -28,7 +28,7 @@ npm install pm2 -g
 ```
 Run the app by executing the following command in the project's directory
 ```bash
-pm2 start index.js --name discordrpc
+pm2 start npm --name discordrpc -- start
 ```
 If you close the terminal window the project will keep running.
 To stop the RPC use

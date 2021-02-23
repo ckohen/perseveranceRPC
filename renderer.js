@@ -31,6 +31,11 @@ async function updateLocation() {
   }
 }
 
+function reconnect() {
+  const { ipcRenderer } = require('electron');
+  ipcRenderer.sendSync('reconnect', 'trigger');
+}
+
 function fade(element, rate) {
   let op = 1;
   return new Promise(resolve => {
