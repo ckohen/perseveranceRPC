@@ -19,7 +19,7 @@ npm i
 
 ## Running Project
 ```bash
-node index.js
+npm start
 ```
 ### PM2 alternative
 Install PM2 with
