@@ -1,6 +1,6 @@
 {
   "name": "perseverancerpc",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A quick discord RPC application for tracking perseverance landing.",
   "main": "index.js",
   "scripts": {

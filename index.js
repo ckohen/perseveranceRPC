@@ -106,8 +106,9 @@ ipcMain.on('updateLocation', (event, arg) => {
   event.returnValue = true;
 });
 
-ipcMain.on('reconnect', () => {
+ipcMain.on('reconnect', event => {
   forceReconnect();
+  event.returnValue = true;
 });
 
 app.on('ready', () => {
@@ -225,7 +226,11 @@ function connect() {
 
 function forceReconnect() {
   forced = true;
-  rpcClient.destroy();
+  try {
+    rpcClient.destroy();
+  } catch {
+    connect();
+  }
 }
 
 connect();
